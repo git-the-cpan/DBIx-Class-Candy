@@ -37,6 +37,7 @@ t/lib/IRC/Schema/ResultSet/User.pm
 t/lib2/IRC/Schema/Result/Bar.pm
 t/lib2/IRC/Schema/Result/Foo.pm
 t/recursion-bug.t
+t/release-changes_has_content.t
 t/release-pod-syntax.t
 t/rs-imports.t
 weaver.ini

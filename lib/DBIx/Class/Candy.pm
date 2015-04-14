@@ -1,5 +1,5 @@
 package DBIx::Class::Candy;
-$DBIx::Class::Candy::VERSION = '0.003000';
+$DBIx::Class::Candy::VERSION = '0.003001';
 use strict;
 use warnings;
 
