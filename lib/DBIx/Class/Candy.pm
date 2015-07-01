@@ -1,5 +1,5 @@
 package DBIx::Class::Candy;
-$DBIx::Class::Candy::VERSION = '0.004000';
+$DBIx::Class::Candy::VERSION = '0.004001';
 use strict;
 use warnings;
 
@@ -284,6 +284,8 @@ sub gen_INIT {
        # to avoid experimental referring to the method
        experimental::->import(@$experimental)
     }
+
+    mro::set_mro($inheritor, 'c3');
 
     1;
   }
