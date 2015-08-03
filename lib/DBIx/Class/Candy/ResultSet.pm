@@ -1,5 +1,5 @@
 package DBIx::Class::Candy::ResultSet;
-$DBIx::Class::Candy::ResultSet::VERSION = '0.004001';
+$DBIx::Class::Candy::ResultSet::VERSION = '0.005000';
 use strict;
 use warnings;
 

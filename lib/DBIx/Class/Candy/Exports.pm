@@ -1,5 +1,5 @@
 package DBIx::Class::Candy::Exports;
-$DBIx::Class::Candy::Exports::VERSION = '0.004001';
+$DBIx::Class::Candy::Exports::VERSION = '0.005000';
 # ABSTRACT: Create sugar for your favorite ORM, DBIx::Class
 
 use strict;

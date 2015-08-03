@@ -1,5 +1,5 @@
 package DBIx::Class::Candy;
-$DBIx::Class::Candy::VERSION = '0.004001';
+$DBIx::Class::Candy::VERSION = '0.005000';
 use strict;
 use warnings;
 
@@ -45,19 +45,29 @@ sub autotable { $_[1] }
 
 sub experimental { $_[1] }
 
+sub _extract_part {
+   my ($self, $class) = @_;
+   if (my ( $part ) = $class =~ /(?:::Schema)?::Result::(.+)$/) {
+      return $part
+   } else {
+      croak 'unrecognized naming scheme!'
+   }
+}
+
 sub gen_table {
    my ( $self, $class, $version ) = @_;
-   if ($version == 1) {
-      if (my ( $part ) = $class =~ /(?:::Schema)?::Result::(.+)$/) {
-         require Lingua::EN::Inflect;
-         require String::CamelCase;
-         $part =~ s/:://g;
-         $part = String::CamelCase::decamelize($part);
-         return join q{_}, split /\s+/,
-            Lingua::EN::Inflect::PL(join q{ }, split /_/, $part);
-      } else {
-         croak 'unrecognized naming scheme!'
-      }
+   if ($version eq 'singular') {
+      my $part = $self->_extract_part($class);
+      require String::CamelCase;
+      $part =~ s/:://g;
+      return String::CamelCase::decamelize($part);
+   } elsif ($version == 1) {
+      my $part = $self->_extract_part($class);
+      require Lingua::EN::Inflect;
+      require String::CamelCase;
+      $part =~ s/:://g;
+      $part = String::CamelCase::decamelize($part);
+      return join q{_}, split /\s+/, Lingua::EN::Inflect::PL(join q{ }, split /_/, $part);
    }
 }
 
@@ -150,7 +160,8 @@ sub parse_arguments {
       $base = $args[$idx + 1];
       $skipnext = 1;
     } elsif ( $val eq '-autotable' ) {
-      $autotable = ord $args[$idx + 1];
+      $autotable = $args[$idx + 1];
+      $autotable = ord $autotable if length $autotable == 1;
       $skipnext = 1;
     } elsif ( $val eq '-perl5' ) {
       $perl_version = ord $args[$idx + 1];
@@ -517,16 +528,31 @@ This allows you to define a column and set it as unique in a single call:
 
 =head1 AUTOTABLE VERSIONS
 
-Currently there is a single version, C<v1>, which looks at your class name,
-grabs everything after C<::Schema::Result::> (or C<::Result::>), removes the
-C<::>'s, converts it to underscores instead of camel-case, and pluralizes it.
-Here are some examples if that's not clear:
+Currently there are two versions:
+
+=head2 C<v1>
+
+It looks at your class name, grabs everything after C<::Schema::Result::> (or
+C<::Result::>), removes the C<::>'s, converts it to underscores instead of
+camel-case, and pluralizes it.  Here are some examples if that's not clear:
 
  MyApp::Schema::Result::Cat -> cats
  MyApp::Schema::Result::Software::Building -> software_buildings
  MyApp::Schema::Result::LonelyPerson -> lonely_people
  MyApp::DB::Result::FriendlyPerson -> friendly_people
  MyApp::DB::Result::Dog -> dogs
+
+=head2 C<'singular'>
+
+It looks at your class name, grabs everything after C<::Schema::Result::> (or
+C<::Result::>), removes the C<::>'s and converts it to underscores instead of
+camel-case.  Here are some examples if that's not clear:
+
+ MyApp::Schema::Result::Cat -> cat
+ MyApp::Schema::Result::Software::Building -> software_building
+ MyApp::Schema::Result::LonelyPerson -> lonely_person
+ MyApp::DB::Result::FriendlyPerson -> friendly_person
+ MyApp::DB::Result::Dog -> dog
 
 Also, if you just want to be different, you can easily set up your own naming
 scheme.  Just add a C<gen_table> method to your candy subclass.  The method
