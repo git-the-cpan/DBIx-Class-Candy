@@ -32,7 +32,7 @@ DESCRIPTION
       * exports a bunch of the package methods that you normally use to
       define your DBIx::Class results
 
-      * makes a few aliases to make some of the original method names a
+      * makes a few aliases to make some of the original method names
       shorter or more clear
 
       * defines very few new subroutines that transform the arguments
@@ -244,7 +244,7 @@ AUTOTABLE VERSIONS
        lc $class;
      }
 
-    Which would tranform MyApp::Schema::Result::Foo into
+    Which would transform MyApp::Schema::Result::Foo into
     myapp_schema_result_foo.
 
     Or maybe instead of using the standard MyApp::Schema::Result namespace
